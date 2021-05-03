@@ -1,0 +1,119 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject IAppState _appState
+@inject IStringLocalizer<Resource> _localizer
+
+<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
+    <MatDrawer @bind-Opened="@_navMenuOpened">
+        <header class="drawer-header">
+            <div class="drawer-logo">
+                <img alt="@_appState.AppName" class="logo-img" src="icon-512.png" title="@_appState.AppName">&nbsp;
+                <a class="miniHover" href="/">@_appState.AppName</a>
+            </div>
+        </header>
+        <NavMenu />
+    </MatDrawer>
+    <MatDrawerContent>
+        <MatAppBarContainer Style="display: flex; flex-direction: column; min-height: 100vh;">
+            <MatAppBar Fixed="true">
+                <MatAppBarRow>
+                    <MatAppBarSection>
+                        <MatAppBarTitle>
+                        </MatAppBarTitle>
+                        <div class="hidden-mdc-down">
+                            <MatTooltip Tooltip="@_localizer["AppHoverNavToggle"]">
+                                <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                            </MatTooltip>
+                            <MatTooltip Tooltip="@_localizer["AppHoverNavMinimize"]">
+                                <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
+                            </MatTooltip>
+                        </div>
+                    </MatAppBarSection>
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                        <TopRightBarSection></TopRightBarSection>
+                    </MatAppBarSection>
+                </MatAppBarRow>
+            </MatAppBar>
+            <MatAppBarContent Style="flex: 1; display: flex; flex-direction: column;">
+                @*
+                    <Breadcrumbs RootLinkTitle="@_appState.BreadCrumbHome"></Breadcrumbs>
+                *@
+                <section class="container-fluid" style="flex: 1;">
+                    @Body
+                </section>
+                <Footer></Footer>
+            </MatAppBarContent>
+        </MatAppBarContainer>
+    </MatDrawerContent>
+</MatDrawerContainer>
+
+@code {
+    bool _navMenuOpened = true;
+    bool _navMinified = false;
+    public string bbDrawerClass = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var defaultThreadCurrentCulture = System.Globalization.CultureInfo.DefaultThreadCurrentCulture;
+        Console.WriteLine($"Current culture is {defaultThreadCurrentCulture.TwoLetterISOLanguageName}.");
+        string welcomeString = "WelcomeTitle".GetLocalizedValue(defaultThreadCurrentCulture.TwoLetterISOLanguageName);
+        Console.WriteLine($"Translated WelcomeTitle is {welcomeString}.");
+
+        if (_appState != null)
+        {
+            await _appState.InitAsync($"{nameof(MainLayout)}.{nameof(OnInitializedAsync)}()"); // Ensure our app state data is initialized.
+
+            var userProfile = _appState.UserProfile;
+            if (userProfile != null)
+            {
+                _navMenuOpened = userProfile.IsNavOpen;
+                _navMinified = userProfile.IsNavMinified;
+            }
+        }
+    }
+
+    void NavToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+
+        if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+        else
+        {
+            bbDrawerClass = "closed";
+        }
+
+        StateHasChanged();
+    }
+
+    void NavLock()
+    {
+        //Todo Lock Nav
+    }
+
+    void NavMinify()
+    {
+        _navMinified = !_navMinified;
+
+        if (!_navMenuOpened)
+        {
+            _navMinified = true;
+        }
+
+        if (_navMinified)
+        {
+            bbDrawerClass = "mini";
+            _navMenuOpened = true;
+        }
+        else if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+
+        _navMenuOpened = true;
+
+        StateHasChanged();
+    }
+}

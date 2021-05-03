@@ -1,0 +1,97 @@
+﻿@page "/metricconcentrate"
+@using SprayCalc.Shared
+@using SprayCalc.Client.Infrastructure
+@using SprayCalc.Client.Models
+@using static SprayCalc.Client.Consts.ComponentEnums
+@using SprayCalc.Client.Helpers
+
+@*@inject HttpClient Http*@
+
+<h2>Metric Concentrate</h2>
+
+<EditForm Model="@metricConcentrate" OnValidSubmit="@HandleValidSubmit">
+    <ValidationSummary />
+
+    <p>
+        <InputRadioGroup @bind-Value="metricConcentrate.SwathSize">
+            Choose a Swath Size:
+            <br>
+            @foreach (var swathSize in (SwathSize[])Enum
+            .GetValues(typeof(SwathSize)))
+            {
+                var description = EnumHelper<SwathSize>.GetDisplayValue(swathSize);
+                <InputRadio Value="swathSize" />
+                <text>&nbsp;</text>@description<br>
+            }
+        </InputRadioGroup>
+    </p>
+    @*
+        <p>
+        <MatRadioGroup @bind-Value="@metricConcentrate.SwathSize" Items="@(Enum.GetValues(typeof(SwathSize)).Cast<SwathSize>())">
+        </MatRadioGroup>
+        </p>
+    *@
+    <p>
+        <label>
+            <MatTextField @bind-Value="@metricConcentrate.ProductName" HelperText="Enter product name" Label="Product" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@metricConcentrate.DiluentParts" HelperText="Enter diluent parts" Label="Diluent Parts" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@metricConcentrate.ChemicalParts" HelperText="Enter chemical parts" Label="Chemical Parts" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@metricConcentrate.DiluentCostPerLiter" HelperText="Enter diluent cost per liter" Label="Diluent cost/liter" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@metricConcentrate.GramsAiPerLiter" HelperText="Enter grams per liter" Label="Grams ai/liter" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@metricConcentrate.ChemicalCostPerLiter" HelperText="Enter chemical cost per liter" Label="Chemical Cost / Liter ($)" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@metricConcentrate.FlowRateLiterPerHour" HelperText="Enter flow rate in liters per hour" Label="Flow Rate (l/hr)" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@metricConcentrate.SpeedKilometerPerHour" HelperText="Enter speed in kilometers per hour" Label="Speed (kph)" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            Note/Comment:
+        </label>
+        <div>
+            <InputTextArea @bind-Value="metricConcentrate.Note" />
+        </div>
+    </p>
+
+    <button type="submit">Submit</button>
+</EditForm>
+<br />
+    <p>
+        &copy;2021 <a target="_blank" href="https://www.msctek.com/">MscTek, Inc.</a> 
+    </p>
+
+@code {
+    private Models.MetricConcentrate metricConcentrate = new() { CreatedDate = DateTime.UtcNow };
+
+    private void HandleValidSubmit()
+    {
+
+    }
+}

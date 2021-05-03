@@ -1,0 +1,127 @@
+﻿@page "/metricreadytouse"
+@inherits MetricReadyToUseViewModel
+
+<h2>Metric Ready to Use</h2>
+
+<EditForm Model="@MetricReadyToUse" OnValidSubmit="@HandleValidSubmit">
+    <CustomValidation @ref="customValidation" />
+    <ValidationSummary />
+
+    <p>
+        <InputRadioGroup @bind-Value="MetricReadyToUse.SwathSize">
+            Choose a Swath Size:
+            <br>
+            @foreach (var swathSize in (SwathSize[])Enum
+            .GetValues(typeof(SwathSize)))
+            {
+                var description = EnumHelper<SwathSize>.GetDisplayValue(swathSize);
+                <InputRadio Value="swathSize" />
+                <text>&nbsp;</text>@description<br>
+            }
+        </InputRadioGroup>
+    </p>
+    @*
+        <p>
+        <MatRadioGroup @bind-Value="@MetricReadyToUse.SwathSize" Items="@(Enum.GetValues(typeof(SwathSize)).Cast<SwathSize>())">
+        </MatRadioGroup>
+        </p>
+    *@
+    <p>
+        <label>
+            <MatTextField @bind-Value="@MetricReadyToUse.ProductName" HelperText="Enter product name" Label="Product" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@MetricReadyToUse.GramsAiPerLiter" HelperText="Enter grams per liter" Label="Grams ai/liter" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@MetricReadyToUse.ChemicalCostPerLiter" HelperText="Enter chemical cost per liter" Label="Chemical Cost / Liter ($)" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@MetricReadyToUse.FlowRateLiterPerHour" HelperText="Enter flow rate in liters per hour" Label="Flow Rate (l/hr)" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            <MatTextField @bind-Value="@MetricReadyToUse.SpeedKilometerPerHour" HelperText="Enter speed in kilometers per hour" Label="Speed (kph)" HelperTextPersistent="false" HelperTextValidation="true"></MatTextField>
+        </label>
+    </p>
+    <p>
+        <label>
+            Note/Comment:
+        </label>
+        <div>
+            <InputTextArea @bind-Value="MetricReadyToUse.Note" />
+        </div>
+    </p>
+    <div class="row">
+        <div class="col-sm-2">
+            <div>
+                <MatButton Raised="true" TrailingIcon="save">Save&nbsp;&nbsp;&nbsp;</MatButton>
+            </div>
+            <div>
+                <MatButton Raised="true" TrailingIcon="alternate_email" OnClick="OnLocalEmailClicked">Email&nbsp;</MatButton>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div>
+                <MatButton Raised="true" TrailingIcon="delete">Delete</MatButton>
+            </div>
+@*            <div>
+                <MatButton Raised="true" TrailingIcon="email" OnClick="OnOnlineEmailClicked">Online Email</MatButton>
+            </div>
+*@        </div>
+    </div>
+</EditForm>
+
+<MatDialog @bind-IsOpen="@SendEmailDialogIsOpen">
+    <MatDialogTitle>Email Ready to Use Calculations</MatDialogTitle>
+    <MatDialogContent>
+        <p>Email To:</p>
+        <MatTextField @bind-Value="@EmailToAddress"></MatTextField>
+        <p>Subject:</p>
+        <MatTextField @bind-Value="@EmailSubject"></MatTextField>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { SendEmailDialogIsOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@OkClick">Send</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    private CustomValidation customValidation;
+
+    private void HandleValidSubmit()
+    {
+        customValidation.ClearErrors();
+
+        var errors = new Dictionary<string, List<string>>();
+
+        // Note: Can do more complex validation here besides just required validation.
+        if (string.IsNullOrEmpty(MetricReadyToUse.ProductName))
+        {
+            errors.Add(nameof(MetricReadyToUse.ProductName),
+                new()
+                {
+                    "'Product Name' is required."
+                });
+        }
+
+        if (errors.Count() > 0)
+        {
+            customValidation.DisplayErrors(errors);
+        }
+        else
+        {
+            //Logger.LogInformation("HandleValidSubmit called: Processing the form");
+
+            // Process the valid form
+        }
+    }
+
+} 

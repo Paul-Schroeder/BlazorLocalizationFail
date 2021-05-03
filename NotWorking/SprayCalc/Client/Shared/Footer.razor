@@ -1,0 +1,8 @@
+﻿@inject IAppState _appState
+
+<span>
+    &copy;&nbsp;@DateTime.Now.Year&nbsp;<a target="_blank" href="https://www.MSCTek.com/">MSCTek, Inc.</a> | Version @_appState?.AppVersion
+</span>
+
+@code {
+}

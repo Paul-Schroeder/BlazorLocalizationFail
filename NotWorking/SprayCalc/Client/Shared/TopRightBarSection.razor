@@ -1,0 +1,12 @@
+﻿@inject IStringLocalizer<Resource> _localizer
+
+<SelectCulture></SelectCulture>
+<MatTooltip Tooltip="@_localizer["Feedback"]">
+    <MatIconButton Link="https://www.MSCTek.com/" RefBack="@context" Target="_blank"><i class="fa fa-comment" aria-hidden="true"></i></MatIconButton>
+</MatTooltip>
+<MatTooltip Tooltip="@_localizer["About"]">
+    <MatIconButton Link="https://www.MSCTek.com/" RefBack="@context" Target="_blank"><i class="fa fa-info" aria-hidden="true"></i></MatIconButton>
+</MatTooltip>
+
+@code {
+}

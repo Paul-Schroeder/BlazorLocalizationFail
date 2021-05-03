@@ -1,0 +1,29 @@
+﻿@using System.Globalization
+@inject ILocalStorageService _localStorage
+@inject NavigationManager _navigationManager
+
+<MatSelectValue Class="ml-md-auto" Value="CurrentCulture" 
+        Items="@LocalizerSettings.SupportedCulturesWithName"
+        ValueSelector=@(i => i.Item2)
+        ValueChanged="(string i) => OnCultureChanged(i)">
+    <ItemTemplate Context="CultureItem">
+        <span>@CultureItem.Item1</span>
+    </ItemTemplate>
+</MatSelectValue>
+
+@code {
+    private string CurrentCulture { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CurrentCulture = CultureInfo.CurrentCulture.Name;
+
+        await base.OnInitializedAsync();
+    }
+
+    public void OnCultureChanged(string culture)
+    {
+        _localStorage.SetItemAsync<string>("culture", culture);
+        _navigationManager.NavigateTo(_navigationManager.Uri, forceLoad: true);
+    }
+}
